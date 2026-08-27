@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Halaman Tidak Ditemukan | XellCodee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900;1000&family=Fira+Code:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23080C14'/><path d='M28 32 L48 50 L28 68' stroke='%236366F1' stroke-width='12' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M72 32 L52 50 L72 68' stroke='%2306B6D4' stroke-width='12' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" type="image/svg+xml">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: #080C14; color: #fff; }
+        .glow-indigo { box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.4); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+    <!-- Ambient light orbs -->
+    <div class="absolute w-96 h-96 rounded-full -top-20 -left-20 pointer-events-none" style="background:radial-gradient(circle,rgba(99,102,241,0.2),transparent 70%);"></div>
+    <div class="absolute w-96 h-96 rounded-full -bottom-20 -right-20 pointer-events-none" style="background:radial-gradient(circle,rgba(6,182,212,0.18),transparent 70%);"></div>
+
+    <div class="max-w-md w-full relative z-10 flex flex-col items-center">
+        <!-- 404 Neon Terminal Visual -->
+        <div class="relative mb-6">
+            <div class="w-32 h-32 rounded-3xl bg-slate-900/90 border-2 border-indigo-500/40 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden animate-bounce">
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent pointer-events-none"></div>
+                <div class="flex items-center gap-1 mb-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
+                </div>
+                <span class="font-mono text-3xl font-black text-cyan-300">&lt;404/&gt;</span>
+                <span class="text-[10px] font-mono text-slate-400 mt-1">null_pointer</span>
+            </div>
+            <span class="absolute -bottom-2 -right-2 bg-rose-500 text-white font-black text-xs px-2.5 py-1 rounded-full uppercase tracking-wider shadow">Not Found</span>
+        </div>
+
+        <h1 class="text-6xl font-black tracking-tight mb-2 text-indigo-400">Oops!</h1>
+        <h2 class="text-2xl font-black mb-4 text-slate-200">Halaman Tidak Ditemukan</h2>
+        <p class="text-slate-400 font-bold mb-8 text-sm leading-relaxed">
+            Sepertinya kode atau endpoint URL yang kamu tuju belum terdefinisi. Jangan biarkan streak belajarmu terputus!
+        </p>
+
+        <div class="w-full flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="index.html" 
+               class="bg-[#6366F1] text-white font-black text-base py-3.5 px-8 rounded-2xl uppercase tracking-wide hover:scale-[1.02] transition-transform glow-indigo flex items-center justify-center gap-2"
+               style="border-bottom:4px solid #4F46E5;">
+                <i class="fas fa-home"></i> Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    <footer class="absolute bottom-6 text-xs font-bold text-slate-500">
+        &copy; 2026 XellCodee. All rights reserved.
+    </footer>
+</body>
+</html>

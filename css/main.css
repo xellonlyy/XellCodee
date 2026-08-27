@@ -1,0 +1,291 @@
+/* ==========================================================================
+   XellCodee - Core Design System & Stylesheet (Electric Indigo & Aurora Cyan)
+   ========================================================================== */
+
+:root {
+    --xc-indigo: #6366F1;
+    --xc-indigo-dark: #4F46E5;
+    --xc-indigo-light: #C7D2FE;
+    --xc-cyan: #06B6D4;
+    --xc-cyan-dark: #0891B2;
+    --xc-emerald: #10B981;
+    --xc-emerald-dark: #059669;
+    --xc-amber: #F59E0B;
+    --xc-coral: #F43F5E;
+    --xc-purple: #8B5CF6;
+    --xc-dark: #080C14;
+    --xc-dark-surface: #0F172A;
+    --xc-dark-card: rgba(15, 23, 42, 0.75);
+    --xc-border: rgba(255, 255, 255, 0.08);
+}
+
+*, *::before, *::after {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--xc-dark);
+    color: #F8FAFC;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    font-family: 'Nunito', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #080C14;
+}
+::-webkit-scrollbar-thumb {
+    background: #6366F1;
+    border-radius: 10px;
+}
+
+/* ── Modern 3D Tactile Buttons ── */
+.btn-press {
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    border-bottom-width: 4px;
+    user-select: none;
+}
+.btn-press:active:not(:disabled) {
+    transform: translateY(4px);
+    border-bottom-width: 0;
+    margin-top: 4px;
+    box-shadow: 0 0 0 0 transparent !important;
+}
+
+/* ── Hero Mesh Background & Aurora Grid ── */
+.hero-bg {
+    background: #080C14;
+    position: relative;
+}
+.hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 70% 50% at 20% 15%, rgba(99, 102, 241, 0.22) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(6, 182, 212, 0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 85%, rgba(139, 92, 246, 0.16) 0%, transparent 50%);
+    pointer-events: none;
+}
+.hero-grid {
+    background-image:
+        linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+/* ── Glassmorphism Components ── */
+.glass-card {
+    background: rgba(15, 23, 42, 0.70);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.45);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(99, 102, 241, 0.15);
+}
+
+.nav-glass {
+    background: rgba(8, 12, 20, 0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+/* ── Text Gradients & Glow ── */
+.gradient-text-aurora {
+    background: linear-gradient(135deg, #6366F1 0%, #06B6D4 50%, #10B981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.gradient-text-indigo {
+    background: linear-gradient(135deg, #A5B4FC 0%, #6366F1 50%, #8B5CF6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.text-glow-indigo {
+    text-shadow: 0 0 25px rgba(99, 102, 241, 0.6);
+}
+
+/* ── Glow Shadows ── */
+.glow-indigo {
+    box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.35);
+}
+.glow-cyan {
+    box-shadow: 0 10px 30px -5px rgba(6, 182, 212, 0.35);
+}
+.glow-emerald {
+    box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.35);
+}
+
+/* ── Infinite Marquee ── */
+.marquee-container {
+    overflow: hidden;
+    user-select: none;
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
+    background: rgba(15, 23, 42, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+}
+.marquee-container::before,
+.marquee-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+}
+.marquee-container::before {
+    left: 0;
+    background: linear-gradient(90deg, #080C14, transparent);
+}
+.marquee-container::after {
+    right: 0;
+    background: linear-gradient(-90deg, #080C14, transparent);
+}
+.marquee-content {
+    display: flex;
+    flex-shrink: 0;
+    gap: 1.5rem;
+    align-items: center;
+    animation: marquee 35s linear infinite;
+}
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* ── Language Pill ── */
+.lang-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: #E2E8F0;
+    white-space: nowrap;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.lang-pill:hover {
+    border-color: #6366F1;
+    transform: scale(1.05);
+}
+
+/* ── Skill Tree Map Connectors ── */
+.skill-node {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.skill-node:hover {
+    transform: translateY(-6px) scale(1.02);
+}
+.node-line {
+    background: linear-gradient(180deg, #6366F1 0%, #06B6D4 100%);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+}
+
+/* ── Shimmering Effect ── */
+.btn-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+.btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        60deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.25) 50%,
+        transparent 70%
+    );
+    transform: rotate(30deg);
+    animation: shimmer 4s infinite;
+}
+@keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(30deg); }
+    30%, 100% { transform: translateX(100%) rotate(30deg); }
+}
+
+/* ── Float Keyframes ── */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+@keyframes floatDelayed {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-14px); }
+}
+.animate-float {
+    animation: float 4.5s ease-in-out infinite;
+}
+.animate-float-delayed {
+    animation: floatDelayed 5.5s ease-in-out infinite 1s;
+}
+
+/* ── Scroll Reveal Animations ── */
+.reveal-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Onboarding Option Cards (Electric Indigo Dark Theme) ── */
+.opt-card {
+    border: 2px solid rgba(255, 255, 255, 0.08) !important;
+    background: #0F172A !important;
+    box-shadow: 0 4px 0 0 #020617 !important;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #F8FAFC !important;
+}
+.opt-card:hover {
+    background: #1E293B !important;
+    border-color: rgba(99, 102, 241, 0.6) !important;
+    transform: translateY(-2px);
+}
+.opt-card.selected {
+    border-color: #6366F1 !important;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+    box-shadow: 0 4px 0 0 #4F46E5, 0 0 25px rgba(99, 102, 241, 0.3) !important;
+    color: #FFFFFF !important;
+}
+.opt-card.selected * {
+    color: #FFFFFF !important;
+}
+.opt-card.selected p,
+.opt-card.selected span.text-slate-400 {
+    color: #C7D2FE !important;
+}
+.opt-card.selected i {
+    color: #818CF8 !important;
+}
+.step-container {
+    display: none;
+}
+.step-container.active {
+    display: flex;
+}

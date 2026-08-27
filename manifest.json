@@ -1,0 +1,18 @@
+{
+  "name": "XellCodee - Interactive Coding Academy",
+  "short_name": "XellCodee",
+  "description": "Belajar software engineering interaktif langsung di browser dengan skill tree, daily streak, dan kurikulum gratis.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#080C14",
+  "theme_color": "#6366F1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23080C14'/><path d='M28 32 L48 50 L28 68' stroke='%236366F1' stroke-width='12' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M72 32 L52 50 L72 68' stroke='%2306B6D4' stroke-width='12' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
