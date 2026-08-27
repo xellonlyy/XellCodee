@@ -61,44 +61,51 @@ print(f"🚀 Halo {name}! Streak belajarmu: {streak} hari.")
 print("⚡ Status: Siap kuasai Python & Software Engineering!")
 `;
 
-window.runHeroCode = () => {
+window.runHeroCode = async () => {
     const editor = document.getElementById('heroCodeEditor');
     const output = document.getElementById('heroTerminalOutput');
     const status = document.getElementById('heroRunnerStatus');
+    const runBtn = document.getElementById('heroRunBtn');
     if (!editor || !output) return;
 
     const code = editor.value;
-    output.innerText = "⚡ Menjalankan kode pada engine browser...";
 
-    setTimeout(() => {
-        let simulated = "";
-        let isSuccess = false;
+    // Disable tombol & tampilkan loading
+    if (runBtn) {
+        runBtn.disabled = true;
+        runBtn.innerHTML = "<i class='fas fa-spinner fa-spin mr-1'></i> Menjalankan...";
+    }
 
-        try {
-            if (code.includes("print(")) {
-                simulated = "🚀 Halo Developer! Streak belajarmu: 7 hari.\n⚡ Status: Siap kuasai Python & Software Engineering!\n[Eksekusi Berhasil: 0.04s - Memory: 4.2MB]";
-                isSuccess = true;
-            } else {
-                simulated = "⚠️ Catatan: Gunakan fungsi print(...) untuk melihat output di terminal.";
-            }
-        } catch (e) {
-            simulated = "❌ Error: " + e.message;
+    const isFirstLoad = !window.isPyodideReady || !window.isPyodideReady();
+    output.innerText = isFirstLoad
+        ? "⚙️ Memuat Python runtime (pertama kali ~5 detik)..."
+        : "⚡ Menjalankan kode Python...";
+
+    const { output: result, isError } = await window.runPythonCode(code);
+
+    if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.innerHTML = runBtn.dataset.originalHtml || "▶ Run";
+    }
+
+    output.innerText = result;
+
+    if (!isError) {
+        if (window.SoundManager) window.SoundManager.playSuccessSound();
+        if (window.KidFriendly && window.KidFriendly.launchConfetti) window.KidFriendly.launchConfetti();
+        if (status) {
+            status.className = "flex items-center gap-1.5 text-[11px] font-black text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30";
+            status.innerHTML = "<i class='fas fa-check-circle'></i> Output Valid! +25 XP";
         }
-
-        output.innerText = simulated;
-
-        if (isSuccess) {
-            if (window.SoundManager) window.SoundManager.playSuccessSound();
-            if (window.KidFriendly && window.KidFriendly.launchConfetti) window.KidFriendly.launchConfetti();
-            if (status) {
-                status.className = "flex items-center gap-1.5 text-[11px] font-black text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30";
-                status.innerHTML = "<i class='fas fa-check-circle'></i> Output Valid! +25 XP";
-            }
-            if (window.StorageManager) {
-                window.StorageManager.addXP(25);
-            }
+        if (window.StorageManager) {
+            window.StorageManager.addXP(25);
         }
-    }, 280);
+    } else {
+        if (status) {
+            status.className = "flex items-center gap-1.5 text-[11px] font-black text-rose-400 bg-rose-950/60 px-3 py-1 rounded-full border border-rose-500/30";
+            status.innerHTML = "<i class='fas fa-times-circle'></i> Error";
+        }
+    }
 };
 
 window.resetHeroCode = () => {
@@ -254,6 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 5. Update Daily Quests Status
     if (window.updateDailyQuests) window.updateDailyQuests();
+
+    // 5b. Pre-warm Pyodide di background supaya eksekusi pertama lebih cepat
+    if (window.prewarmPyodide) window.prewarmPyodide();
 
     // 6. Splash Screen Animation
     setTimeout(() => {

@@ -190,127 +190,100 @@ window.resetCurrentCode = () => {
 };
 
 /**
- * Eksekusi dan validasi kode
+ * Eksekusi dan validasi kode — menggunakan Pyodide (Python sungguhan)
  */
-window.runCode = () => {
+window.runCode = async () => {
     const code = document.getElementById('codeEditor')?.value || "";
     const outputEl = document.getElementById('codeOutput');
     const statusEl = document.getElementById('outputStatus');
+    const runBtn = document.getElementById('runCodeBtn');
     const lesson = window.lessons[window.currentLessonIdx];
 
     if (!outputEl || !statusEl || !lesson) return;
 
-    outputEl.innerText = "⚡ Menjalankan kode...\n";
+    // Disable tombol & tampilkan loading
+    if (runBtn) {
+        runBtn.disabled = true;
+        runBtn.innerHTML = "<i class='fas fa-spinner fa-spin mr-2'></i> Menjalankan...";
+    }
 
-    setTimeout(() => {
-        let simulatedOutput = "";
-        let isSuccess = false;
+    const isFirstLoad = !window.isPyodideReady || !window.isPyodideReady();
+    outputEl.innerText = isFirstLoad
+        ? "⚙️ Memuat Python runtime (pertama kali ~5 detik)...\n"
+        : "⚡ Menjalankan kode Python...\n";
 
-        try {
-            if (code.includes("print(")) {
-                if (window.currentLessonIdx === 0) {
-                    if (code.includes("Developer") || code.includes("name")) {
-                        simulatedOutput = "Hello, Developer!";
-                        isSuccess = true;
-                    } else {
-                        simulatedOutput = "Output belum sesuai. Pastikan mencetak 'Hello, Developer!'";
-                    }
-                } else if (window.currentLessonIdx === 1) {
-                    if (code.includes("if") && code.includes("score")) {
-                        simulatedOutput = "LULUS";
-                        isSuccess = true;
-                    } else {
-                        simulatedOutput = "Gunakan percabangan if/else dengan kondisi score.";
-                    }
-                } else if (window.currentLessonIdx === 2) {
-                    if (code.includes("for") && (code.includes("in") || code.includes("languages"))) {
-                        simulatedOutput = "Belajar: Python\nBelajar: JavaScript\nBelajar: Rust";
-                        isSuccess = true;
-                    } else {
-                        simulatedOutput = "Gunakan perulangan for loop untuk iterasi list.";
-                    }
-                } else if (window.currentLessonIdx === 3) {
-                    if (code.includes("def tambah") || code.includes("return")) {
-                        simulatedOutput = "35";
-                        isSuccess = true;
-                    } else {
-                        simulatedOutput = "Definisikan fungsi dengan return value penjumlahan.";
-                    }
-                } else if (window.currentLessonIdx === 4) {
-                    if (code.includes("genap") || code.includes("sum") || code.includes("% 2")) {
-                        simulatedOutput = "Total genap: 12";
-                        isSuccess = true;
-                    } else {
-                        simulatedOutput = "Saring angka genap dan cetak hasil fungsi sum().";
-                    }
-                } else {
-                    simulatedOutput = ">>> Program selesai dieksekusi!\n[Output]: " + (code.match(/print\((.*)\)/)?.[1] || "Done");
-                    isSuccess = true;
-                }
+    // Jalankan Python sungguhan via Pyodide
+    const { output, isError } = await window.runPythonCode(code);
+
+    // Kembalikan tombol
+    if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.innerHTML = "<i class='fas fa-play mr-2'></i> Jalankan Kode (RUN)";
+    }
+
+    outputEl.innerText = output;
+
+    if (isError) {
+        if (window.SoundManager) window.SoundManager.playErrorSound();
+        statusEl.className = "flex items-center gap-2 text-xc-coral font-black bg-rose-950/40 px-4 py-2.5 rounded-xl border border-rose-500/30";
+        statusEl.innerHTML = "<i class='fas fa-times-circle text-lg'></i> Kode mengandung error. Cek pesan di atas.";
+        return;
+    }
+
+    // Validasi output terhadap expectedOutput lesson
+    const expected = (lesson.expectedOutput || "").trim();
+    const actual = output.trim();
+    const isSuccess = actual === expected;
+
+    if (isSuccess) {
+        let xpReward = 25;
+        let gemsReward = 10;
+        let isFirst = true;
+
+        if (window.StorageManager) {
+            const result = window.StorageManager.completeLesson(window.currentLessonIdx);
+            isFirst = result.isFirstTime;
+            if (!isFirst) {
+                xpReward = 5;
+                gemsReward = 0;
+            }
+        }
+
+        if (window.SoundManager) {
+            if (window.currentLessonIdx === window.lessons.length - 1) {
+                window.SoundManager.playLevelUpSound();
             } else {
-                simulatedOutput = "⚠️ Catatan: Gunakan fungsi print() untuk mencetak output ke terminal.";
-                isSuccess = false;
+                window.SoundManager.playSuccessSound();
             }
-        } catch (e) {
-            simulatedOutput = "❌ SyntaxError: " + e.message;
-            isSuccess = false;
         }
 
-        outputEl.innerText = simulatedOutput;
-
-        if (isSuccess) {
-            let xpReward = 25;
-            let gemsReward = 10;
-            let isFirst = true;
-
-            if (window.StorageManager) {
-                const result = window.StorageManager.completeLesson(window.currentLessonIdx);
-                isFirst = result.isFirstTime;
-                if (!isFirst) {
-                    xpReward = 5;
-                    gemsReward = 0;
-                }
-            }
-
-            if (window.SoundManager) {
-                if (window.currentLessonIdx === window.lessons.length - 1) {
-                    window.SoundManager.playLevelUpSound();
-                } else {
-                    window.SoundManager.playSuccessSound();
-                }
-            }
-
-            // Trigger Kid-Friendly Canvas Confetti
-            if (window.KidFriendly && window.KidFriendly.launchConfetti) {
-                window.KidFriendly.launchConfetti();
-            }
-
-            statusEl.className = "flex items-center justify-between gap-2 text-xc-emerald font-black bg-emerald-950/40 px-4 py-2.5 rounded-xl border border-emerald-500/30";
-            statusEl.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-check-circle text-lg text-xc-emerald"></i>
-                    <span>${isFirst ? '🎉 Hebat! Modul Selesai!' : '🌟 Latihan Ulang Selesai!'}</span>
-                </div>
-                <div class="flex items-center gap-2 text-xs">
-                    <span class="bg-emerald-500/20 px-2 py-0.5 rounded text-xc-emerald font-black">+${xpReward} XP</span>
-                    ${gemsReward > 0 ? `<span class="bg-amber-500/20 px-2 py-0.5 rounded text-xc-amber font-black">+${gemsReward} Gems</span>` : ''}
-                </div>
-            `;
-
-            window.renderLessonNavigation();
-
-            const nextBtn = document.getElementById('nextLessonBtn');
-            if (nextBtn && window.currentLessonIdx < window.lessons.length - 1) {
-                nextBtn.classList.remove('hidden');
-            }
-        } else {
-            if (window.SoundManager) {
-                window.SoundManager.playErrorSound();
-            }
-            statusEl.className = "flex items-center gap-2 text-xc-coral font-black bg-rose-950/40 px-4 py-2.5 rounded-xl border border-rose-500/30";
-            statusEl.innerHTML = "<i class='fas fa-lightbulb text-lg text-xc-amber'></i> Belum pas! Klik tombol 'Hint' atau 'Bedah Arti Kode' untuk bantuan.";
+        if (window.KidFriendly && window.KidFriendly.launchConfetti) {
+            window.KidFriendly.launchConfetti();
         }
-    }, 300);
+
+        statusEl.className = "flex items-center justify-between gap-2 text-xc-emerald font-black bg-emerald-950/40 px-4 py-2.5 rounded-xl border border-emerald-500/30";
+        statusEl.innerHTML = `
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle text-lg text-xc-emerald"></i>
+                <span>${isFirst ? '🎉 Hebat! Modul Selesai!' : '🌟 Latihan Ulang Selesai!'}</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+                <span class="bg-emerald-500/20 px-2 py-0.5 rounded text-xc-emerald font-black">+${xpReward} XP</span>
+                ${gemsReward > 0 ? `<span class="bg-amber-500/20 px-2 py-0.5 rounded text-xc-amber font-black">+${gemsReward} Gems</span>` : ''}
+            </div>
+        `;
+
+        window.renderLessonNavigation();
+
+        const nextBtn = document.getElementById('nextLessonBtn');
+        if (nextBtn && window.currentLessonIdx < window.lessons.length - 1) {
+            nextBtn.classList.remove('hidden');
+        }
+    } else {
+        if (window.SoundManager) window.SoundManager.playErrorSound();
+        statusEl.className = "flex items-center gap-2 text-xc-coral font-black bg-rose-950/40 px-4 py-2.5 rounded-xl border border-rose-500/30";
+        statusEl.innerHTML = `<i class='fas fa-lightbulb text-lg text-xc-amber'></i> Output belum sesuai. Diharapkan: <code class="ml-1 bg-rose-900/40 px-1.5 rounded">${expected}</code>`;
+    }
 };
 
 window.nextLesson = () => {
